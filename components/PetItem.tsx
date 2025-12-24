@@ -1,6 +1,6 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useState } from "react";
-
+import { Alert } from 'react-native';
 interface PetItemProps {
   pet: {
     id: number;
@@ -10,9 +10,10 @@ interface PetItemProps {
     image: string;
     image2: string;
   };
+  onAdopt: () => void; // 👈 ضفنا هذا
 }
 
-const PetItem = ({ pet }: PetItemProps) => {
+const PetItem = ({ pet, onAdopt }: PetItemProps) => {
   const [currentImage, setCurrentImage] = useState(pet.image);
   return (
     <View style={styles.container}>
@@ -35,10 +36,22 @@ const PetItem = ({ pet }: PetItemProps) => {
 >
   <Text style={styles.buttonText}>Pet</Text>
 </TouchableOpacity>
-
-        <TouchableOpacity style={styles.adoptButton}>
-          <Text style={styles.buttonText}>Adopt</Text>
-        </TouchableOpacity>
+  <TouchableOpacity
+  style={styles.adoptButton}
+  onPress={() => {
+    Alert.alert(
+      'تبني الحيوان',
+      'هل أنت متأكد أنك تريد التبني؟',
+      [
+        { text: 'إلغاء', style: 'cancel' },
+        { text: 'نعم، تبني', onPress: onAdopt },
+      ],
+      { cancelable: true }
+    );
+  }}
+>
+  <Text style={styles.buttonText}>Adopt</Text>
+</TouchableOpacity>
       </View>
     </View>
   );

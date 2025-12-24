@@ -6,22 +6,26 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { useState } from "react";
-import pets from "@/data/pets";
+import originalPets from '../data/pets';
 import PetItem from "./PetItem";
+
 const PetList = () => {
+  const [pets, setPets] = useState(originalPets);
   const [query, setQuery] = useState('');
   const [type, setType] = useState('All');
-  const petList = pets
-  .filter((pet) =>
-    type === 'All' ? true : pet.type === type
-  )
-  .filter((pet) =>
-    pet.name.toLowerCase().includes(query.toLowerCase())
-  )
-  .map((pet) => (
-    <PetItem key={pet.id} pet={pet} />
-  ));
   
+  const handleAdopt = (id: number) => {
+    setPets((prevPets) => prevPets.filter((pet) => pet.id !== id));
+  };
+
+  const filteredPets = pets
+    .filter((pet) =>
+      type === 'All' ? true : pet.type === type
+    )
+    .filter((pet) =>
+      pet.name.toLowerCase().includes(query.toLowerCase())
+    );
+
   return (
     <ScrollView
       contentContainerStyle={styles.container}
@@ -37,25 +41,27 @@ const PetList = () => {
 
       {/* Filter by type */}
       <ScrollView horizontal contentContainerStyle={styles.filterContainer}>
-  <TouchableOpacity style={styles.filterButton} onPress={() => setType('All')}>
-    <Text>All</Text>
-  </TouchableOpacity>
+        <TouchableOpacity style={styles.filterButton} onPress={() => setType('All')}>
+          <Text>All</Text>
+        </TouchableOpacity>
 
-  <TouchableOpacity style={styles.filterButton} onPress={() => setType('Cat')}>
-    <Text>Cat</Text>
-  </TouchableOpacity>
+        <TouchableOpacity style={styles.filterButton} onPress={() => setType('Cat')}>
+          <Text>Cat</Text>
+        </TouchableOpacity>
 
-  <TouchableOpacity style={styles.filterButton} onPress={() => setType('Dog')}>
-    <Text>Dog</Text>
-  </TouchableOpacity>
+        <TouchableOpacity style={styles.filterButton} onPress={() => setType('Dog')}>
+          <Text>Dog</Text>
+        </TouchableOpacity>
 
-  <TouchableOpacity style={styles.filterButton} onPress={() => setType('Rabbit')}>
-    <Text>Rabbit</Text>
-  </TouchableOpacity>
-</ScrollView>
+        <TouchableOpacity style={styles.filterButton} onPress={() => setType('Rabbit')}>
+          <Text>Rabbit</Text>
+        </TouchableOpacity>
+      </ScrollView>
 
       {/* Pet List */}
-      {petList}
+      {filteredPets.map((pet) => (
+        <PetItem key={pet.id} pet={pet} onAdopt={() => handleAdopt(pet.id)} />
+      ))}
     </ScrollView>
   );
 };
