@@ -8,32 +8,51 @@ import {
 import React, { useState } from "react";
 import pets from "@/data/pets";
 import PetItem from "./PetItem";
-
 const PetList = () => {
-  const petList = pets.map((pet) => <PetItem key={pet.id} pet={pet} />);
+  const [query, setQuery] = useState('');
+  const [type, setType] = useState('All');
+  const petList = pets
+  .filter((pet) =>
+    type === 'All' ? true : pet.type === type
+  )
+  .filter((pet) =>
+    pet.name.toLowerCase().includes(query.toLowerCase())
+  )
+  .map((pet) => (
+    <PetItem key={pet.id} pet={pet} />
+  ));
+  
   return (
     <ScrollView
       contentContainerStyle={styles.container}
       style={styles.containerStyle}
     >
       {/* Search Input */}
-      <TextInput placeholder="Search for a pet" style={styles.searchInput} />
+      <TextInput 
+        placeholder="Search for a pet" 
+        style={styles.searchInput}
+        value={query}
+        onChangeText={(text) => setQuery(text)}
+      />
 
       {/* Filter by type */}
       <ScrollView horizontal contentContainerStyle={styles.filterContainer}>
-        <TouchableOpacity style={styles.filterButton}>
-          <Text>All</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.filterButton}>
-          <Text>Cat</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.filterButton}>
-          <Text>Dog</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.filterButton}>
-          <Text>Rabbit</Text>
-        </TouchableOpacity>
-      </ScrollView>
+  <TouchableOpacity style={styles.filterButton} onPress={() => setType('All')}>
+    <Text>All</Text>
+  </TouchableOpacity>
+
+  <TouchableOpacity style={styles.filterButton} onPress={() => setType('Cat')}>
+    <Text>Cat</Text>
+  </TouchableOpacity>
+
+  <TouchableOpacity style={styles.filterButton} onPress={() => setType('Dog')}>
+    <Text>Dog</Text>
+  </TouchableOpacity>
+
+  <TouchableOpacity style={styles.filterButton} onPress={() => setType('Rabbit')}>
+    <Text>Rabbit</Text>
+  </TouchableOpacity>
+</ScrollView>
 
       {/* Pet List */}
       {petList}
